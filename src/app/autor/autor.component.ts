@@ -84,6 +84,7 @@ constructor(private autorService: AutorService){}
   //Nuevo Anexo Constructor
   guardar(aut:IAutor){
    this.autor = {
+     "id": aut.id,
      "nombre": aut.nombre,
      "ape_pat": aut.ape_pat,
      "ape_mat": aut.ape_mat,
@@ -145,15 +146,16 @@ constructor(private autorService: AutorService){}
       
   }
   //Setea el objeto a editar
-  editar(autor){
+  editar(autoreditado){
+      const esteditar = Object.assign({}, autoreditado) 
       this.showModal("M");
-      
+      this.autor = esteditar,
       this.autor = {
-            "id": autor.id,
-            "nombre": autor.nombre,
-            "ape_pat": autor.ape_pat,
-            "ape_mat": autor.ape_mat,
-            "pais": autor.pais
+            "id": this.autor.id,
+            "nombre": this.autor.nombre,
+            "ape_pat": this.autor.ape_pat,
+            "ape_mat": this.autor.ape_mat,
+            "pais": this.autor.pais
        }
   }
 

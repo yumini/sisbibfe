@@ -7,7 +7,7 @@ export class ConfigService {
 
     constructor() {
         //Se coloca la Url del Api Services
-        this._apiURI = 'http://localhost:8082/';
+        this._apiURI = 'http://localhost:8084/';
      }
 
      getApiURI() {
