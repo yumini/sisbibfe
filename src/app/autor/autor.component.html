@@ -1,0 +1,103 @@
+  <br><br><br>
+  <button type="button" class="btn btn-primary" (click)="nuevo()">Nuevo</button>
+    <div *ngIf="isModalShown" [config]="{ show: true }" (onHidden)="onHidden()" bsModal #autoShownModal="bs-modal" class="modal fade"
+    tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title pull-left">{{titulo_modal}}</h4>
+                <button type="button" class="close pull-right" aria-label="Close" (click)="hideModal()">
+              <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <form #frmAutor="ngForm" novalidate>
+            <div class="modal-body">
+                
+                <label class="control-label"><i class="fa fa-user" aria-hidden="true"></i>Nombres:</label>
+                <input type="text" class="form-control" required
+                    [(ngModel)]="autor.nombre" name="nombre" #nombreState="ngModel">
+                 <div [hidden]="nombreState.valid || nombreState.pristine"  class="alert alert-danger">
+                    Nombres requerido
+                </div>   
+                <label class="control-label"><i class="fa fa-user" aria-hidden="true"></i>Paterno:</label>
+                <input type="text" class="form-control"  required
+                    [(ngModel)]="autor.ape_pat" name="ape_pat"  #apepatState="ngModel">
+                <div [hidden]="apepatState.valid || apepatState.pristine"  class="alert alert-danger">
+                    Apellido Paterno requerido
+                </div>      
+                <label class="control-label"><i class="fa fa-user" aria-hidden="true"></i>Materno</label>
+                <input type="text" class="form-control"  required
+                    [(ngModel)]="autor.ape_mat" name="ape_mat" #apematState="ngModel">
+                <div [hidden]="apematState.valid || apematState.pristine"  class="alert alert-danger">
+                    Apellido Paterno requerido
+                </div>     
+                <label class="control-label"><i class="fa fa-user" aria-hidden="true"></i>Pais</label>
+                <input type="text" class="form-control" [(ngModel)]="autor.pais" name="pais" >
+            </div>
+            <div class="modal-footer">
+                <input type="button" value="Cancelar" class="btn btn-danger" (click)="hideModal()"/>
+                <input type="button" value="Guardar" class="btn btn-success" (click)="guardar(autor)" [disabled]="!frmAutor.form.valid" />
+            </div>
+            </form>
+        </div>
+    </div>
+    </div>
+    
+  <div class="panel">
+  
+   
+
+ <div class="container col-md-10">
+       <h4>
+        {{titulo1}}
+    </h4>
+    <table class="table table-hover">
+      <thead>
+      <tr>
+          <th>id</th>
+          <th>Nombres</th>
+          <th>Apellido Paterno</th>
+          <th>Apellido Materno</th>
+          <th>Pais</th>
+          <th colspan="2">Acciones</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let item of todoautores">
+          <td>{{item.id}}</td>
+          <td>{{item.nombre}}</td>
+          <td>{{item.ape_pat}}</td>
+          <td>{{item.ape_mat}}</td>
+          <td>{{item.pais}}</td>
+          <td><button type="button" class="btn btn-warning" (click)="editar(item)">Editar</button></td>
+          <td><button type="button" class="btn btn-danger" (click)="setAutorEliminar(item)">Eliminar</button></td>
+
+      </tr>
+      </tbody>      
+    </table>
+
+ </div>
+<!--modal para eliminar registro    !-->
+ <div bsModal #childModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title pull-left">Eliminar Registro</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="hideChildModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="text-danger">
+        ¿Desea Eliminar al Autor:<br> 
+        << Id: {{idautor}} >><br>
+        << Nombre y Apellidos: {{nombreautor}} >>?
+        </p>
+     </div>
+     <div class="modal-footer">
+        <input type="button" value="NO" class="btn btn-info" (click)="hideChildModal()"/>
+        <input type="button" value="SI" class="btn btn-warning" (click)="eliminar(idautor)"/>
+    </div>
+    </div>
+  </div>
+</div>
