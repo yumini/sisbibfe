@@ -1,20 +1,20 @@
-import {Injectable} from '@angular/core';
-import {Http, Response, Headers, RequestOptions} from '@angular/http';
+import { Injectable } from '@angular/core';
+import { Http, Response, Headers, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
-import {Observer} from 'rxjs/Observer';
+import { Observer } from 'rxjs/Observer';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
 
 import { ConfigService } from '../settings/config.service';
-import { IAutor} from '../settings/interfaces';
+import { IAutor } from '../settings/interfaces';
 
 @Injectable()
-export class AutorService{
+export class AutorService {
     _baseUrl: string = '';
-    
 
-    constructor(private http: Http,private configService: ConfigService) {
+
+    constructor(private http: Http, private configService: ConfigService) {
         this._baseUrl = configService.getApiURI();
     }
 
@@ -32,16 +32,17 @@ export class AutorService{
         let body = JSON.stringify(autor);
         console.log(body);
         var headers = new Headers();
-        
+
         headers.append('Content-Type', 'application/json');
         let options = new RequestOptions({ headers: headers });
-        
+
         return this.http.post(this._baseUrl + 'autores', body.toString(), options)
             .map((res: Response) => {
                 return res.json();
             })
             .catch(this.handleError);
-    }   
+    }
+    
     //Modificar Autor
     modificarAutor(autor: IAutor): Observable<void> {
 
@@ -56,6 +57,7 @@ export class AutorService{
             })
             .catch(this.handleError);
     }
+
     //Eliminar autor
     eliminarAutor(id: number): Observable<void> {
         return this.http.delete(this._baseUrl + 'autores/' + id)
@@ -64,6 +66,7 @@ export class AutorService{
             })
             .catch(this.handleError);
     }
+    
     //si ocurre algun error
     private handleError(error: any) {
         var applicationError = error.headers.get('Application-Error');
@@ -71,8 +74,8 @@ export class AutorService{
         var modelStateErrors: string = '';
 
         if (!serverError.type) {
-            console.log('Se detecto un Error'+serverError);
-            
+            console.log('Se detecto un Error' + serverError);
+
             for (var key in serverError) {
                 if (serverError[key])
                     modelStateErrors += serverError[key] + '\n';
@@ -83,6 +86,6 @@ export class AutorService{
 
         return Observable.throw(applicationError || modelStateErrors || 'Server error');
     }
-    
-    
+
+
 }

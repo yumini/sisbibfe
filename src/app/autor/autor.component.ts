@@ -86,7 +86,11 @@ constructor(private autorService: AutorService){}
   //Nuevo Anexo Constructor
   guardar(aut:IAutor){
    this.autor = {
+<<<<<<< HEAD
      "id": aut.id;
+=======
+     "id": aut.id,
+>>>>>>> c5a36cb4bd71a00b5af9911a879c06e14393f607
      "nombre": aut.nombre,
      "ape_pat": aut.ape_pat,
      "ape_mat": aut.ape_mat,
