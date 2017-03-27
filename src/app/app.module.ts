@@ -8,6 +8,7 @@ import { ModalModule } from 'ng2-bootstrap';
 import { AutorComponent } from './autor/autor.component';
 import { AutorService} from '../shared/dataservices/autor.service';
 import { ConfigService} from '../shared/settings/config.service';
+import { AlertModule } from 'ng2-bootstrap';
 
 @NgModule({
   declarations: [
@@ -19,6 +20,7 @@ import { ConfigService} from '../shared/settings/config.service';
     FormsModule,
     ReactiveFormsModule,
     ModalModule.forRoot(),
+    AlertModule.forRoot(),
     HttpModule
   ],
   providers: [AutorService, ConfigService],

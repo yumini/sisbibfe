@@ -47,8 +47,6 @@ export class AutorService{
 
         let headers = new Headers();
         headers.append('Content-Type', 'application/json');
-        headers.append('Access-Control-Allow-Origin', '*');
-        
 
         return this.http.put(this._baseUrl + 'autores' , JSON.stringify(autor), {
             headers: headers

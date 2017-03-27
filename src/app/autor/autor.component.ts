@@ -4,6 +4,7 @@ import {IAutor} from '../../shared/settings/interfaces';
 import { FormsModule,ReactiveFormsModule } from '@angular/forms';
 import { ModalDirective } from 'ng2-bootstrap/modal';
 import {NgForm} from '@angular/forms';
+import { AlertModule } from 'ng2-bootstrap';
 
 @Component({
   moduleId: 'modulo.id',
@@ -18,6 +19,7 @@ ape_mat:string;
 pais:string;
 
 autor: IAutor; //Objecto enviado para la API
+public alerts: any = []; 
 
 @ViewChild('autoShownModal') public autoShownModal: ModalDirective;
 public isModalShown: boolean = false;
@@ -30,7 +32,7 @@ constructor(private autorService: AutorService){}
   idautor="";
   nombreautor="";
   btnguardar="";
-   
+  
     //para el modal Registro y Editar
     public showModal(t:string): void {
      
@@ -84,6 +86,7 @@ constructor(private autorService: AutorService){}
   //Nuevo Anexo Constructor
   guardar(aut:IAutor){
    this.autor = {
+     "id": aut.id;
      "nombre": aut.nombre,
      "ape_pat": aut.ape_pat,
      "ape_mat": aut.ape_mat,
@@ -96,7 +99,7 @@ constructor(private autorService: AutorService){}
           () => {
                   console.log('Autor created successfully. ');
                   this.cargarAutores();
-                  
+                  this.addAlert('success','Autor Registrado.. Satisfactoriamente...');
                   this.hideModal();
                 },
                   error => {
@@ -109,11 +112,12 @@ constructor(private autorService: AutorService){}
           () => {
                   console.log('Autor modificado successfully. ');
                   this.cargarAutores();
-                  
+                  this.addAlert('success','Modificado Registrado...Satisfactoriamente...');
                   this.hideModal();
                 },
                   error => {
                   console.error('Error al modificar el Autor. '+error);
+                  this.addAlert('danger','..Error Problema al registrar...');
             });
     }
 
@@ -124,7 +128,7 @@ constructor(private autorService: AutorService){}
           () => {
                   console.log('Autor Eliminado successfully. ');
                   this.cargarAutores();
-                  //this.limpiarInterface();
+                  this.addAlert('success','Registro Eliminado... Satisfactoriamente...');
                   this.hideChildModal();
                 },
                   error => {
@@ -145,16 +149,25 @@ constructor(private autorService: AutorService){}
       
   }
   //Setea el objeto a editar
-  editar(autor){
+  editar(autoreditado){
+      const esteditar = Object.assign({}, autoreditado) 
       this.showModal("M");
-      
+      this.autor = esteditar,
       this.autor = {
-            "id": autor.id,
-            "nombre": autor.nombre,
-            "ape_pat": autor.ape_pat,
-            "ape_mat": autor.ape_mat,
-            "pais": autor.pais
+            "id": this.autor.id,
+            "nombre": this.autor.nombre,
+            "ape_pat": this.autor.ape_pat,
+            "ape_mat": this.autor.ape_mat,
+            "pais": this.autor.pais
        }
+  }
+ //Para la alerta personalizada
+ public addAlert(tipo:string, mensaje:string): void {
+    this.alerts.push({
+      type: tipo,
+      msg: mensaje,
+      timeout: 3000
+    });
   }
 
   limpiarInterface(){
