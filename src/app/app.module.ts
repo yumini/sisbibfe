@@ -2,26 +2,32 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
-import {NgForm} from '@angular/forms';
+import { NgForm } from '@angular/forms';
 import { AppComponent } from './app.component';
 import { ModalModule } from 'ng2-bootstrap';
 import { AutorComponent } from './autor/autor.component';
+import { PaisComponent } from './pais/pais.component';
 import { AutorService} from '../shared/dataservices/autor.service';
+import { PaisService} from '../shared/dataservices/pais.service';
 import { ConfigService} from '../shared/settings/config.service';
+
+import { routing } from './app.routing';
 
 @NgModule({
   declarations: [
     AppComponent,
-    AutorComponent
+    AutorComponent,
+    PaisComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
+    routing,
     ReactiveFormsModule,
     ModalModule.forRoot(),
     HttpModule
   ],
-  providers: [AutorService, ConfigService],
+  providers: [AutorService, ConfigService, PaisService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

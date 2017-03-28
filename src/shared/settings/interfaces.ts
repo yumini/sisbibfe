@@ -5,3 +5,8 @@ export interface IAutor{
     ape_mat:string;
     pais:string;
 }
+
+export interface IPais{
+    idpais?:number;
+    nombre:string;    
+}
