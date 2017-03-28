@@ -1,5 +1,7 @@
   <br><br><br>
+  <div class="col-sm-6">
   <button type="button" class="btn btn-primary" (click)="nuevo()">Nuevo</button>
+  </div>
     <div *ngIf="isModalShown" [config]="{ show: true }" (onHidden)="onHidden()" bsModal #autoShownModal="bs-modal" class="modal fade"
     tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -92,7 +94,7 @@
         ¿Desea Eliminar al Autor:<br> 
         << Id: {{idautor}} >><br>
         << Nombre y Apellidos: {{nombreautor}} >>?
-        </p>
+        </p>    
      </div>
      <div class="modal-footer">
         <input type="button" value="NO" class="btn btn-info" (click)="hideChildModal()"/>
@@ -100,4 +102,8 @@
     </div>
     </div>
   </div>
+</div>
+<!-- Para alerta o mensaje !-->
+<div class="col-lg-6 col-centrada" *ngFor="let alert of alerts">
+  <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout">{{ alert.msg }}</alert>
 </div>

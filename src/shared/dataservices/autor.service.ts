@@ -48,8 +48,8 @@ export class AutorService {
 
         let headers = new Headers();
         headers.append('Content-Type', 'application/json');
-        console.log(autor);
-        return this.http.put(this._baseUrl + 'autores', JSON.stringify(autor), {
+
+        return this.http.put(this._baseUrl + 'autores' , JSON.stringify(autor), {
             headers: headers
         })
             .map((res: Response) => {

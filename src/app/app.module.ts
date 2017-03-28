@@ -10,6 +10,7 @@ import { PaisComponent } from './pais/pais.component';
 import { AutorService} from '../shared/dataservices/autor.service';
 import { PaisService} from '../shared/dataservices/pais.service';
 import { ConfigService} from '../shared/settings/config.service';
+import { AlertModule } from 'ng2-bootstrap';
 
 import { routing } from './app.routing';
 
@@ -25,6 +26,7 @@ import { routing } from './app.routing';
     routing,
     ReactiveFormsModule,
     ModalModule.forRoot(),
+    AlertModule.forRoot(),
     HttpModule
   ],
   providers: [AutorService, ConfigService, PaisService],
