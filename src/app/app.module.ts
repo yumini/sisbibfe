@@ -9,6 +9,7 @@ import { AutorComponent } from './autor/autor.component';
 import { AutorService} from '../shared/dataservices/autor.service';
 import { ConfigService} from '../shared/settings/config.service';
 import { AlertModule } from 'ng2-bootstrap';
+import { PagerService } from '../shared/dataservices/index';
 
 @NgModule({
   declarations: [
@@ -22,8 +23,9 @@ import { AlertModule } from 'ng2-bootstrap';
     ModalModule.forRoot(),
     AlertModule.forRoot(),
     HttpModule
+  
   ],
-  providers: [AutorService, ConfigService],
+  providers: [AutorService, ConfigService, PagerService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

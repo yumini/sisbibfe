@@ -5,6 +5,8 @@ import { FormsModule,ReactiveFormsModule } from '@angular/forms';
 import { ModalDirective } from 'ng2-bootstrap/modal';
 import {NgForm} from '@angular/forms';
 import { AlertModule } from 'ng2-bootstrap';
+import * as _ from 'underscore';
+import { PagerService } from '../../shared/dataservices/index'
 
 @Component({
   moduleId: 'modulo.id',
@@ -19,12 +21,21 @@ ape_mat:string;
 pais:string;
 
 autor: IAutor; //Objecto enviado para la API
-public alerts: any = []; 
+public alerts: any = []; //para los mensajes de alertas
+
+// array of all items to be paged
+private allItems: any[];
+
+// pager object
+pager: any = {};
+
+// paged items
+pagedItems: any[];
 
 @ViewChild('autoShownModal') public autoShownModal: ModalDirective;
 public isModalShown: boolean = false;
 
-constructor(private autorService: AutorService){}
+constructor(private autorService: AutorService, private pagerService: PagerService){}
   titulo1="LISTADO DE AUTORES"; 
   
   todoautores=[];
@@ -33,6 +44,7 @@ constructor(private autorService: AutorService){}
   nombreautor="";
   btnguardar="";
   
+   
     //para el modal Registro y Editar
     public showModal(t:string): void {
      
@@ -77,7 +89,11 @@ constructor(private autorService: AutorService){}
     this.autorService.getAutoresTodos().subscribe((todoautores:IAutor[])=>{
             this.todoautores= todoautores; 
             console.log('Listado de Autores cargado ');
-         },
+            // set items to json response
+            this.allItems = todoautores;
+            // initialize to page 1
+            this.setPage(1);
+        },
          error=>{
             console.log('Fallo Conexion Autor '+error);
          });
@@ -177,6 +193,19 @@ constructor(private autorService: AutorService){}
             "ape_mat": "",
             "pais": ""
         }
-  } 
+  }
+
+  setPage(page: number) {
+        if (page < 1 || page > this.pager.totalPages) {
+            return;
+        }
+
+        // get pager object from service
+        this.pager = this.pagerService.getPager(this.allItems.length, page);
+
+        // get current page of items
+        this.pagedItems = this.allItems.slice(this.pager.startIndex, this.pager.endIndex + 1);
+    } 
+  
 
 }
