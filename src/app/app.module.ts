@@ -5,6 +5,7 @@ import { HttpModule } from '@angular/http';
 import { NgForm } from '@angular/forms';
 import { AppComponent } from './app.component';
 import { ModalModule } from 'ng2-bootstrap';
+import { TypeaheadModule } from 'ng2-bootstrap';
 import { AutorComponent } from './autor/autor.component';
 import { PaisComponent } from './pais/pais.component';
 import { AutorService} from '../shared/dataservices/autor.service';
@@ -28,6 +29,7 @@ import { routing } from './app.routing';
     ReactiveFormsModule,
     ModalModule.forRoot(),
     AlertModule.forRoot(),
+    TypeaheadModule.forRoot(),
     HttpModule
   
   ],
