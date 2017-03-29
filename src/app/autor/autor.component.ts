@@ -197,6 +197,7 @@ constructor(private autorService: AutorService, private pagerService: PagerServi
 
   setPage(page: number) {
         if (page < 1 || page > this.pager.totalPages) {
+            this.pagedItems=this.allItems;
             return;
         }
 
