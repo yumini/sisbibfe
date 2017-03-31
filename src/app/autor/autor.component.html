@@ -32,9 +32,17 @@
                         Apellido Paterno requerido
                     </div>
                     <label class="control-label"><i class="fa fa-user" aria-hidden="true"></i>País</label>
-                    <input name="model2" class="form-control" auto-complete blank-option-text="Seleccione" [(ngModel)]="model2" [source]="paises"
-                        value-property-name="idpais" display-property-name="nombre" [list-formatter]="autocompleListFormatter"
-                        placeholder="Ingrese texto" #paisState="ngModel" />
+                    <input name="model2" class="form-control" 
+                           auto-complete 
+                           blank-option-text="Seleccione" 
+                           [(ngModel)]="model2"
+                           [source]="paises"
+                            value-property-name="idpais"
+                            display-property-name="nombre"
+                            [list-formatter]="autocompleListFormatter"
+                            placeholder="Ingrese texto"
+                            min-chars="1"
+                            #paisState="ngModel" />
                     <div [hidden]="paisState.valid || paisState.pristine" class="alert alert-danger">
                         País requerido
                     </div>
