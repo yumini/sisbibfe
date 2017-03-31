@@ -3,7 +3,7 @@ export interface IAutor{
     nombre:string;
     ape_pat:string;
     ape_mat:string;
-    pais:string;
+    idpais: IPais;
 }
 
 export interface IPais{

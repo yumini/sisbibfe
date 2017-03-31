@@ -32,21 +32,12 @@
                         Apellido Paterno requerido
                     </div>
                     <label class="control-label"><i class="fa fa-user" aria-hidden="true"></i>País</label>
-                    <input [(ngModel)]="asyncSelected" name="pais"
-                        [typeahead]="dataSource"
-                        (typeaheadLoading)="changeTypeaheadLoading($event)"
-                        (typeaheadNoResults)="changeTypeaheadNoResults($event)"
-                        (typeaheadOnSelect)="typeaheadOnSelect($event)"
-                        typeaheadOptionsLimit="7"
-                        typeaheadOptionField="nombre"
-                        placeholder="Ingrese nombre de país"
-                        class="form-control">
-                    <div *ngIf="typeaheadLoading===true">
-                        <i class="glyphicon glyphicon-refresh ng-hide" style=""></i>
+                    <input name="model2" class="form-control" auto-complete blank-option-text="Seleccione" [(ngModel)]="model2" [source]="paises"
+                        value-property-name="idpais" display-property-name="nombre" [list-formatter]="autocompleListFormatter"
+                        placeholder="Ingrese texto" #paisState="ngModel" />
+                    <div [hidden]="paisState.valid || paisState.pristine" class="alert alert-danger">
+                        País requerido
                     </div>
-                    <div *ngIf="typeaheadNoResults===true" class="" style="">
-                        <i class="glyphicon glyphicon-remove"></i> No hay resultados
-                    </div>                    
                 </div>
                 <div class="modal-footer">
                     <input type="button" value="Cancelar" class="btn btn-danger" (click)="hideModal()" />
@@ -82,7 +73,7 @@
                     <td>{{item.nombre}}</td>
                     <td>{{item.ape_pat}}</td>
                     <td>{{item.ape_mat}}</td>
-                    <td>{{item.pais}}</td>
+                    <td>{{item.idpais.nombre}}</td>
                     <td><button type="button" class="btn btn-warning" (click)="editar(item)">Editar</button></td>
                     <td><button type="button" class="btn btn-danger" (click)="setAutorEliminar(item)">Eliminar</button></td>
 

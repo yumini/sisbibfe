@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { AutorService } from '../../shared/dataservices/autor.service';
 import { PaisService } from '../../shared/dataservices/pais.service';
 import { IAutor, IPais } from '../../shared/settings/interfaces';
@@ -20,45 +21,31 @@ import { TypeaheadMatch } from 'ng2-bootstrap/typeahead';
 })
 export class AutorComponent implements OnInit {
     //propiedades del componente autor
-    nombre: string;
-    ape_pat: string;
-    ape_mat: string;
-    pais: string;
+    public nombre: string;
+    public ape_pat: string;
+    public ape_mat: string;
+    public pais: string;
+    public paises: any[];
+    public model2: IPais;
 
-    //Autocomplete
-    public asyncSelected: string;
-    public typeaheadLoading: boolean;
-    public typeaheadNoResults: boolean;
-    public dataSource: Observable<any>;
-    public statesComplex: any[];
-
-
-    autor: IAutor; //Objecto enviado para la API
+    public autor: IAutor; //Objecto enviado para la API
     public alerts: any = []; //para los mensajes de alertas
 
     // array of all items to be paged
     private allItems: any[];
 
     // pager object
-    pager: any = {};
+    public pager: any = {};
 
     // paged items
-    pagedItems: any[];
+    public pagedItems: any[];
 
     @ViewChild('autoShownModal') public autoShownModal: ModalDirective;
+
     public isModalShown: boolean = false;
-
     constructor(private autorService: AutorService, private pagerService: PagerService, private paisService: PaisService) {
-        
-        this.dataSource = Observable
-            .create((observer: any) => {
-                // Runs on every search
-                observer.next(this.asyncSelected);
-            })
-            .mergeMap((token: string) => this.getStatesAsObservable(token));
+
     }
-
-
 
     titulo1 = "LISTADO DE AUTORES";
     todoautores = [];
@@ -66,7 +53,6 @@ export class AutorComponent implements OnInit {
     idautor = "";
     nombreautor = "";
     btnguardar = "";
-
 
     //para el modal Registro y Editar
     public showModal(t: string): void {
@@ -108,12 +94,13 @@ export class AutorComponent implements OnInit {
 
     }
     //cargar Autores
-    cargarAutores() {
+    public cargarAutores() {
         this.autorService.getAutoresTodos().subscribe((todoautores: IAutor[]) => {
             this.todoautores = todoautores;
             console.log('Listado de Autores cargado ');
             // set items to json response
             this.allItems = todoautores;
+            console.log(this.allItems);
             // initialize to page 1
             this.setPage(1);
         },
@@ -122,13 +109,13 @@ export class AutorComponent implements OnInit {
             });
     }
 
-    public cargarPaises(){
-        this.paisService.getPaisesTodos().subscribe((statesComplex: IPais[]) => {
-            this.statesComplex = statesComplex;
+    public cargarPaises() {
+        this.paisService.getPaisesTodos().subscribe((paises: IPais[]) => {
+            this.paises = paises;
             console.log('Listado de Paises cargado ');
             // set items to json response            
-            this.statesComplex = statesComplex;
-            console.log(statesComplex);            
+            this.paises = paises;
+            console.log(paises);
         },
             error => {
                 console.log('Fallo Conexion Autor ' + error);
@@ -136,14 +123,15 @@ export class AutorComponent implements OnInit {
     }
 
     //Nuevo Anexo Constructor
-    guardar(aut: IAutor) {
+    public guardar(aut: IAutor) {
+        aut.idpais = this.model2;
         this.autor = {
             "id": aut.id,
             "nombre": aut.nombre,
             "ape_pat": aut.ape_pat,
             "ape_mat": aut.ape_mat,
-            "pais": aut.pais
-        }
+            "idpais": aut.idpais
+        }        
         console.log('Autor ' + aut.nombre);
         console.log("btnguardar al guardar= " + this.btnguardar);
         if (this.btnguardar == "NEW") {
@@ -153,6 +141,10 @@ export class AutorComponent implements OnInit {
                     this.cargarAutores();
                     this.addAlert('success', 'Autor Registrado.. Satisfactoriamente...');
                     this.hideModal();
+                    this.model2 = {
+                        idpais: 0 as number,
+                        nombre: ""
+                    };
                 },
                 error => {
                     console.error('Error al Crear el Autor. ' + error);
@@ -166,6 +158,10 @@ export class AutorComponent implements OnInit {
                     this.cargarAutores();
                     this.addAlert('success', 'Modificado Registrado...Satisfactoriamente...');
                     this.hideModal();
+                    this.model2 = {
+                        idpais: 0 as number,
+                        nombre: ""
+                    };
                 },
                 error => {
                     console.error('Error al modificar el Autor. ' + error);
@@ -175,7 +171,7 @@ export class AutorComponent implements OnInit {
 
     }
     //Eliminar autor accion
-    eliminar(id: number) {
+    public eliminar(id: number) {
         this.autorService.eliminarAutor(id).subscribe(
             () => {
                 console.log('Autor Eliminado successfully. ');
@@ -189,29 +185,30 @@ export class AutorComponent implements OnInit {
     }
 
     //Setea datos Eliminar
-    setAutorEliminar(au: IAutor) {
+    public setAutorEliminar(au: IAutor) {
         this.nombreautor = au.nombre + ' ' + au.ape_pat + ' ' + au.ape_pat;
         this.idautor = au.id.toString();
         this.showChildModal();
     }
     //boton Nuevo Modal
-    nuevo() {
+    public nuevo() {
         this.showModal("N");
         this.limpiarInterface();
 
     }
     //Setea el objeto a editar
-    editar(autoreditado) {
-        const esteditar = Object.assign({}, autoreditado)
+    public editar(autoreditado) {
+        const autoreditar = Object.assign({}, autoreditado)        
         this.showModal("M");
-        this.autor = esteditar,
+        this.autor = autoreditar,
             this.autor = {
                 "id": this.autor.id,
                 "nombre": this.autor.nombre,
                 "ape_pat": this.autor.ape_pat,
                 "ape_mat": this.autor.ape_mat,
-                "pais": this.autor.pais
-            }
+                "idpais": this.autor.idpais
+            },
+            this.model2 = this.autor.idpais
     }
     //Para la alerta personalizada
     public addAlert(tipo: string, mensaje: string): void {
@@ -222,16 +219,16 @@ export class AutorComponent implements OnInit {
         });
     }
 
-    limpiarInterface() {
+    public limpiarInterface() {
         this.autor = {
             "nombre": "",
             "ape_pat": "",
             "ape_mat": "",
-            "pais": ""
+            "idpais": this.model2
         }
     }
 
-    setPage(page: number) {
+    public setPage(page: number) {
         if (page < 1 || page > this.pager.totalPages) {
             this.pagedItems = this.allItems;
             return;
@@ -244,28 +241,9 @@ export class AutorComponent implements OnInit {
         this.pagedItems = this.allItems.slice(this.pager.startIndex, this.pager.endIndex + 1);
     }
 
-
-    public getStatesAsObservable(token: string): Observable<any> {
-        let query = new RegExp(token, 'ig');
-
-        return Observable.of(
-            this.statesComplex.filter((state: any) => {
-                return query.test(state.nombre);
-            })
-        );
+    autocompleListFormatter = (data: any) => {
+        let html = `${data.nombre}`;
+        return (html);
     }
-
-    public changeTypeaheadLoading(e: boolean): void {
-        this.typeaheadLoading = e;
-    }
-
-    public changeTypeaheadNoResults(e: boolean): void {
-        this.typeaheadNoResults = e;
-    }
-
-    public typeaheadOnSelect(e: TypeaheadMatch): void {
-        console.log('Selected value: ', e.value);
-    }
-
 
 }

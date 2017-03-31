@@ -5,7 +5,7 @@ import { HttpModule } from '@angular/http';
 import { NgForm } from '@angular/forms';
 import { AppComponent } from './app.component';
 import { ModalModule } from 'ng2-bootstrap';
-import { TypeaheadModule } from 'ng2-bootstrap';
+
 import { AutorComponent } from './autor/autor.component';
 import { PaisComponent } from './pais/pais.component';
 import { AutorService} from '../shared/dataservices/autor.service';
@@ -13,6 +13,8 @@ import { PaisService} from '../shared/dataservices/pais.service';
 import { ConfigService} from '../shared/settings/config.service';
 import { AlertModule } from 'ng2-bootstrap';
 import { PagerService } from '../shared/dataservices/index';
+
+import { NguiAutoCompleteModule } from '@ngui/auto-complete';
 
 import { routing } from './app.routing';
 
@@ -29,7 +31,7 @@ import { routing } from './app.routing';
     ReactiveFormsModule,
     ModalModule.forRoot(),
     AlertModule.forRoot(),
-    TypeaheadModule.forRoot(),
+    NguiAutoCompleteModule,    
     HttpModule
   
   ],
