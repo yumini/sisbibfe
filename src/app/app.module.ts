@@ -8,8 +8,12 @@ import { ModalModule } from 'ng2-bootstrap';
 
 import { AutorComponent } from './autor/autor.component';
 import { PaisComponent } from './pais/pais.component';
+import { EditorialComponent } from './editorial/editorial.component';
+import { MateriaComponent } from './materia/materia.component';
 import { AutorService} from '../shared/dataservices/autor.service';
 import { PaisService} from '../shared/dataservices/pais.service';
+import { EditorialService} from '../shared/dataservices/editorial.service';
+import { MateriaService} from '../shared/dataservices/materia.service';
 import { ConfigService} from '../shared/settings/config.service';
 import { AlertModule } from 'ng2-bootstrap';
 import { PagerService } from '../shared/dataservices/index';
@@ -22,7 +26,9 @@ import { routing } from './app.routing';
   declarations: [
     AppComponent,
     AutorComponent,
-    PaisComponent
+    PaisComponent,
+    EditorialComponent,
+    MateriaComponent
   ],
   imports: [
     BrowserModule,
@@ -36,7 +42,7 @@ import { routing } from './app.routing';
   
   ],
 
-  providers: [AutorService, PaisService, ConfigService, PagerService],
+  providers: [AutorService, PaisService, EditorialService, MateriaService, ConfigService, PagerService],
 
   bootstrap: [AppComponent]
 })

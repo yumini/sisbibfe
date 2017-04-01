@@ -1,0 +1,131 @@
+<br><br><br>
+
+<div class="col-sm-6">
+    <button type="button" class="btn btn-primary" (click)="nuevo()">Nuevo</button>
+</div>
+<div *ngIf="isModalShown" [config]="{ show: true }" (onHidden)="onHidden()" bsModal #autoShownModal="bs-modal" class="modal fade"
+    tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title pull-left">{{titulo_modal}}</h4>
+                <button type="button" class="close pull-right" aria-label="Close" (click)="hideModal()">
+              <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <form #frmEditorial="ngForm" novalidate>
+                <div class="modal-body">
+
+                    <label class="control-label"><i class="fa fa-user" aria-hidden="true"></i>Nombre:</label>
+                    <input type="text" class="form-control" required [(ngModel)]="editorial.nombre" name="nombre" #nombreState="ngModel">
+                    <div [hidden]="nombreState.valid || nombreState.pristine" class="alert alert-danger">
+                        Nombre Editorial requerido
+                    </div>
+                    
+                    <label class="control-label"><i class="fa fa-user" aria-hidden="true"></i>País</label>
+                    <input name="model2" class="form-control" 
+                           auto-complete 
+                           blank-option-text="Seleccione" 
+                           [(ngModel)]="model2"
+                           [source]="paises"
+                            value-property-name="idpais"
+                            display-property-name="nombre"
+                            [list-formatter]="autocompleListFormatter"
+                            placeholder="Ingrese texto"
+                            min-chars="1"
+                            #paisState="ngModel" />
+                    <div [hidden]="paisState.valid || paisState.pristine" class="alert alert-danger">
+                        País requerido
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="button" value="Cancelar" class="btn btn-danger" (click)="hideModal()" />
+                    <input type="button" value="Guardar" class="btn btn-success" (click)="guardar(editorial)" [disabled]="!frmEditorial.form.valid" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="panel">
+
+
+
+    <div class="container col-md-10">
+        <h4>
+            {{titulo1}}
+        </h4>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>id</th>
+                    <th>Nombres</th>
+                    <th>Pais</th>
+                    <th colspan="2">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of pagedItems">
+                    <td>{{item.ideditorial}}</td>
+                    <td>{{item.nombre}}</td>
+                    <td>{{item.idpais.nombre}}</td>
+                    <td><button type="button" class="btn btn-warning" (click)="editar(item)">Editar</button></td>
+                    <td><button type="button" class="btn btn-danger" (click)="setEditorialEliminar(item)">Eliminar</button></td>
+
+                </tr>
+            </tbody>
+
+        </table>
+        <div class="text-center">
+            <!-- pager -->
+            <nav aria-label="Page navigation example">
+                <ul class="pagination" *ngIf="pager.pages && pager.pages.length">
+                    <li [ngClass]="{disabled:pager.currentPage === 1}">
+                        <a class="page-link" (click)="setPage(1)">Primero</a>
+                    </li>
+                    <li class="page-item" [ngClass]="{disabled:pager.currentPage === 1}">
+                        <a class="page-link" (click)="setPage(pager.currentPage - 1)">Previo</a>
+                    </li>
+                    <li class="page-item" *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}">
+                        <a class="page-link" (click)="setPage(page)">{{page}}</a>
+                    </li>
+                    <li class="page-item" [ngClass]="{disabled:pager.currentPage === pager.totalPages}">
+                        <a class="page-link" (click)="setPage(pager.currentPage + 1)">Siguiente</a>
+                    </li>
+                    <li class="page-item" [ngClass]="{disabled:pager.currentPage === pager.totalPages}">
+                        <a class="page-link" (click)="setPage(pager.totalPages)">Próximo</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <!--modal para eliminar registro    !-->
+    <div bsModal #childModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title pull-left">Eliminar Registro</h4>
+                    <button type="button" class="close pull-right" aria-label="Close" (click)="hideChildModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-danger">
+                        ¿Desea Eliminar la Editorial:<br>
+                        << Id: {{ideditorial}}>><br>
+                            << Nombre Editorial: {{nombreeditorial}}>>?
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <input type="button" value="NO" class="btn btn-info" (click)="hideChildModal()" />
+                    <input type="button" value="SI" class="btn btn-warning" (click)="eliminar(ideditorial)" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Para alerta o mensaje !-->
+    <div class="col-lg-6 col-centrada" *ngFor="let alert of alerts">
+        <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout">{{ alert.msg }}</alert>
+    </div>

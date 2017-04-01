@@ -33,10 +33,8 @@ export class AutorComponent implements OnInit {
 
     // array of all items to be paged
     private allItems: any[];
-
     // pager object
     public pager: any = {};
-
     // paged items
     public pagedItems: any[];
 
@@ -231,6 +229,7 @@ export class AutorComponent implements OnInit {
     public setPage(page: number) {
         if (page < 1 || page > this.pager.totalPages) {
             this.pagedItems = this.allItems;
+            this.pager = this.pagerService.getPager(this.allItems.length, page);
             return;
         }
 

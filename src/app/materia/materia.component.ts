@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { PaisService } from '../../shared/dataservices/pais.service';
-import { IPais } from '../../shared/settings/interfaces';
+import { MateriaService } from '../../shared/dataservices/materia.service';
+import { IMateria } from '../../shared/settings/interfaces';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ModalDirective } from 'ng2-bootstrap/modal';
 import { NgForm } from '@angular/forms';
@@ -9,25 +9,25 @@ import { PagerService } from '../../shared/dataservices/index'
 
 @Component({
   moduleId: 'modulo.id',
-  selector: 'pais',
-  templateUrl: 'pais.component.html'
+  selector: 'materia',
+  templateUrl: 'materia.component.html'
 })
-export class PaisComponent implements OnInit {
-  //propiedades del componente pais
+export class MateriaComponent implements OnInit {
+  //propiedades del componente materia
   nombre: string;  
 
-  pais: IPais; //Objecto enviado para la API
+  materia: IMateria; //Objecto enviado para la API
 
   @ViewChild('autoShownModal') public autoShownModal: ModalDirective;
   public isModalShown: boolean = false;
 
-  constructor(private paisService: PaisService, private pagerService: PagerService) { }
-  titulo1 = "LISTADO DE PAISES";
+  constructor(private materiaService: MateriaService, private pagerService: PagerService) { }
+  titulo1 = "LISTADO DE MATERIAS";
 
-  public todopaises = [];
+  public todomaterias = [];
   public titulo_modal = "";
-  public idpais = "";
-  public nombrepais = "";
+  public idmateria = "";
+  public nombremateria = "";
   public btnguardar = "";
 
   // array of all items to be paged
@@ -73,51 +73,51 @@ export class PaisComponent implements OnInit {
   //Fin de modal Eliminar Registro
   ngOnInit() {
 
-    this.cargarPaises();
+    this.cargarMaterias();
 
   }
-  //cargar Paises
-  cargarPaises() {
-    this.paisService.getPaisesTodos().subscribe((todopaises: IPais[]) => {
-      this.todopaises = todopaises;
-      console.log('Listado de Paises cargado ');
-       // set items to json response
-      this.allItems = todopaises;
+  //cargar Materias
+  cargarMaterias() {
+    this.materiaService.getMateriasTodos().subscribe((todomaterias: IMateria[]) => {
+      this.todomaterias = todomaterias;
+      console.log('Listado de Materias cargado ');
+      // set items to json response
+      this.allItems = todomaterias;
       console.log(this.allItems);
       // initialize to page 1
       this.setPage(1);
     },
       error => {
-        console.log('Falló Conexión Pais ' + error);
+        console.log('Falló Conexión materias ' + error);
       });
   }
 
   //Nuevo Anexo Constructor
-  guardar(pa: IPais) {
-    this.pais = {
-      "idpais": pa.idpais,
-      "nombre": pa.nombre
+  guardar(ma: IMateria) {
+    this.materia = {
+      "idmateria": ma.idmateria,
+      "nombre": ma.nombre
     }
-    console.log('Pais ' + pa.nombre);
+    console.log('Pais ' + ma.nombre);
     console.log("btnguardar al guardar= " + this.btnguardar);
     if (this.btnguardar == "NEW") {
-      this.paisService.crearPais(this.pais).subscribe(
+      this.materiaService.crearPais(this.materia).subscribe(
         () => {
-          console.log('Pais created successfully. ');
-          this.cargarPaises();
+          console.log('materia created successfully. ');
+          this.cargarMaterias();
 
           this.hideModal();
         },
         error => {
-          console.error('Error al Crear el País. ' + error);
+          console.error('Error al Crear la Materia. ' + error);
         });
     }
 
     if (this.btnguardar == "EDIT") {
-      this.paisService.modificarPais(this.pais).subscribe(
+      this.materiaService.modificarMateria(this.materia).subscribe(
         () => {
           console.log('Pais modificado successfully. ');
-          this.cargarPaises();
+          this.cargarMaterias();
 
           this.hideModal();
         },
@@ -127,24 +127,23 @@ export class PaisComponent implements OnInit {
     }
 
   }
-  //Eliminar pais accion
-  eliminar(idpais: number) {
-    this.paisService.eliminarPais(idpais).subscribe(
+  //Eliminar materia accion
+  eliminar(idmateria: number) {
+    this.materiaService.eliminarMateria(idmateria).subscribe(
       () => {
-        console.log('Pais Eliminado successfully. ');
-        this.cargarPaises();
-        //this.limpiarInterface();
+        console.log('Materia Eliminado successfully. ');
+        this.cargarMaterias();
         this.hideChildModal();
       },
       error => {
-        console.error('Error eliminar el Pais. ' + error);
+        console.error('Error eliminar la materia. ' + error);
       });
   }
 
   //Setea datos Eliminar
-  setPaisEliminar(pa: IPais) {
-    this.nombrepais = pa.nombre;
-    this.idpais = pa.idpais.toString();
+  setMateriaEliminar(ma: IMateria) {
+    this.nombremateria = ma.nombre;
+    this.idmateria = ma.idmateria.toString();
     this.showChildModal();
   }
   //boton Nuevo Modal
@@ -154,22 +153,22 @@ export class PaisComponent implements OnInit {
 
   }
   //Setea el objeto a editar
-  editar(paiseditado) {
-    const paiseditar = Object.assign({}, paiseditado)
+  editar(materiaeditado) {
+    const materiaeditar = Object.assign({}, materiaeditado)
     this.showModal("M");
-    this.pais = paiseditar,
-      this.pais = {
-        "idpais": this.pais.idpais,
-        "nombre": this.pais.nombre        
+    this.materia = materiaeditar,
+      this.materia = {
+        "idmateria": this.materia.idmateria,
+        "nombre": this.materia.nombre        
       }
   }
 
   limpiarInterface() {
-    this.pais = {
+    this.materia = {
       "nombre": ""      
     }
   }
-  
+
   public setPage(page: number) {
         if (page < 1 || page > this.pager.totalPages) {
             this.pagedItems = this.allItems;
