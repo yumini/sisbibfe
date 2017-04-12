@@ -1,14 +1,13 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
-import { EditorialService } from '../../shared/dataservices/editorial.service';
-import { PaisService } from '../../shared/dataservices/pais.service';
-import { IEditorial, IPais } from '../../shared/settings/interfaces';
+import { IAnexo } from '../../shared/settings/interfaces';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ModalDirective } from 'ng2-bootstrap/modal';
 import { NgForm } from '@angular/forms';
 import { AlertModule } from 'ng2-bootstrap';
 import * as _ from 'underscore';
-import { PagerService } from '../../shared/dataservices/index'
+import { PagerService } from '../../shared/dataservices/index';
+import { AnexoService } from '../../shared/dataservices/anexo.service';
 
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
@@ -16,39 +15,37 @@ import { TypeaheadMatch } from 'ng2-bootstrap/typeahead';
 
 @Component({
     moduleId: 'modulo.id',
-    selector: 'editorial',
-    templateUrl: 'editorial.component.html'
+    selector: 'anexo',
+    templateUrl: 'anexo.component.html'
 })
-export class EditorialComponent implements OnInit {
-    //propiedades del componente editorial
+export class AnexoComponent implements OnInit {
+    //propiedades del componente autor
     public nombre: string;
-    public paises: any[];
-    public model2: IPais;
+    public ape_pat: string;
+    public ape_mat: string;    
 
-    public editorial: IEditorial; //Objecto enviado para la API
+    public anexo: IAnexo; //Objecto enviado para la API
     public alerts: any = []; //para los mensajes de alertas
 
     // array of all items to be paged
     private allItems: any[];
-
     // pager object
     public pager: any = {};
-
     // paged items
     public pagedItems: any[];
 
     @ViewChild('autoShownModal') public autoShownModal: ModalDirective;
 
     public isModalShown: boolean = false;
-    constructor(private editorialService: EditorialService, private pagerService: PagerService, private paisService: PaisService) {
+    constructor(private anexoService: AnexoService, private pagerService: PagerService) {
 
     }
 
-    titulo1 = "LISTADO DE EDITORIALES";
-    todoeditoriales = [];
+    titulo1 = "LISTADO DE ANEXOS";
+    todoanexos = [];
     titulo_modal = "";
-    ideditorial = "";
-    nombreeditorial = "";
+    idanexo = "";
+    nombreanexo = "";
     btnguardar = "";
 
     //para el modal Registro y Editar
@@ -86,106 +83,82 @@ export class EditorialComponent implements OnInit {
     }
     //Fin de modal Eliminar Registro
     ngOnInit() {
-        this.cargarEditoriales();
-        this.cargarPaises();
+        this.cargarAnexos();        
 
     }
     //cargar Autores
-    public cargarEditoriales() {
-        this.editorialService.getEditorialesTodos().subscribe((todoeditoriales: IEditorial[]) => {
-            this.todoeditoriales = todoeditoriales;
-            console.log('Listado de Editoriales cargado ');
+    public cargarAnexos() {
+        this.anexoService.getAnexosTodos().subscribe((todoanexos: IAnexo[]) => {
+            this.todoanexos = todoanexos;
+            console.log('Listado de Anexos cargado ');
             // set items to json response
-            this.allItems = todoeditoriales;
+            this.allItems = todoanexos;
             console.log(this.allItems);
             // initialize to page 1
             this.setPage(1);
         },
             error => {
-                console.log('Fallo Conexion Autor ' + error);
+                console.log('Fallo Conexion Anexo ' + error);
             });
     }
 
-    public cargarPaises() {
-        this.paisService.getPaisesTodos().subscribe((paises: IPais[]) => {
-            this.paises = paises;
-            console.log('Listado de Paises cargado ');
-            // set items to json response            
-            this.paises = paises;
-            console.log(paises);
-        },
-            error => {
-                console.log('Fallo Conexion Autor ' + error);
-            });
-    }
-
-    //Nuevo Editorial Constructor
-    public guardar(edi: IEditorial) {
-        edi.idpais = this.model2;
-        this.editorial = {
-            "ideditorial": edi.ideditorial,
-            "nombre": edi.nombre,
-            "idpais": edi.idpais
+    //Nuevo Anexo Constructor
+    guardar(ane: IAnexo) {
+        this.anexo = {
+            "idanexo": ane.idanexo,
+            "nombre": ane.nombre,
+            "ape_pat": ane.ape_pat,
+            "ape_mat": ane.ape_mat            
         }        
-        console.log('Editorial ' + edi.nombre);
         console.log("btnguardar al guardar= " + this.btnguardar);
         if (this.btnguardar == "NEW") {
-            this.editorialService.crearEditorial(this.editorial).subscribe(
+            this.anexoService.crearAnexo(this.anexo).subscribe(
                 () => {
-                    console.log('Editorial created successfully. ');
-                    this.cargarEditoriales();
-                    this.addAlert('success', 'Editorial Registrado.. Satisfactoriamente...');
-                    this.hideModal();
-                    this.model2 = {
-                        idpais: 0 as number,
-                        nombre: ""
-                    };
+                    console.log('Anexo created successfully. ');
+                    this.cargarAnexos();
+                    this.addAlert('success', 'Anexo Registrado.. Satisfactoriamente...');
+                    this.hideModal();                    
                 },
                 error => {
-                    console.error('Error al Crear Editorial. ' + error);
+                    console.error('Error al Crear el Anexo. ' + error);
                 });
         }
 
         if (this.btnguardar == "EDIT") {
-            this.editorialService.modificarEditorial(this.editorial).subscribe(
+            this.anexoService.modificarAnexo(this.anexo).subscribe(
                 () => {
-                    console.log('Editorial modificado successfully. ');
-                    this.cargarEditoriales();
+                    console.log('Anexo modificado successfully. ');
+                    this.cargarAnexos();
                     this.addAlert('success', 'Modificado Registrado...Satisfactoriamente...');
                     this.hideModal();
-                    this.model2 = {
-                        idpais: 0 as number,
-                        nombre: ""
-                    };
                 },
                 error => {
-                    console.error('Error al modificar el Autor. ' + error);
+                    console.error('Error al modificar el Anexo. ' + error);
                     this.addAlert('danger', '..Error Problema al registrar...');
                 });
         }
 
     }
-    //Eliminar Editorial accion
+    //Eliminar autor accion
     public eliminar(id: number) {
-        this.editorialService.eliminarEditorial(id).subscribe(
+        this.anexoService.eliminarAnexo(id).subscribe(
             () => {
-                console.log('Editorial Eliminado successfully. ');
-                this.cargarEditoriales();
+                console.log('Anexo Eliminado successfully. ');
+                this.cargarAnexos();
                 this.addAlert('success', 'Registro Eliminado... Satisfactoriamente...');
                 this.hideChildModal();
             },
             error => {
-                console.error('Error eliminar Editorial. ' + error);
+                console.error('Error eliminar el Autor. ' + error);
             });
     }
 
     //Setea datos Eliminar
-    public setEditorialEliminar(edito: IEditorial) {
-        this.nombreeditorial = edito.nombre + ' ' + edito.nombre;
-        this.ideditorial = edito.ideditorial.toString();
+    public setAnexoEliminar(an: IAnexo) {
+        this.nombreanexo = an.nombre + ' ' + an.ape_pat + ' ' + an.ape_pat;
+        this.idanexo = an.idanexo.toString();
         this.showChildModal();
     }
-
     //boton Nuevo Modal
     public nuevo() {
         this.showModal("N");
@@ -193,18 +166,17 @@ export class EditorialComponent implements OnInit {
 
     }
     //Setea el objeto a editar
-    public editar(editorialeditado) {
-        const editorialeditar = Object.assign({}, editorialeditado)        
+    public editar(anexoeditado) {
+        const anexoeditar = Object.assign({}, anexoeditado)        
         this.showModal("M");
-        this.editorial = editorialeditar,
-            this.editorial = {
-                "ideditorial": this.editorial.ideditorial,
-                "nombre": this.editorial.nombre,
-                "idpais": this.editorial.idpais
-            },
-            this.model2 = this.editorial.idpais
+        this.anexo = anexoeditar,
+            this.anexo = {
+                "idanexo": this.anexo.idanexo,
+                "nombre": this.anexo.nombre,
+                "ape_pat": this.anexo.ape_pat,
+                "ape_mat": this.anexo.ape_mat                
+            }            
     }
-    
     //Para la alerta personalizada
     public addAlert(tipo: string, mensaje: string): void {
         this.alerts.push({
@@ -215,9 +187,10 @@ export class EditorialComponent implements OnInit {
     }
 
     public limpiarInterface() {
-        this.editorial = {
+        this.anexo = {
             "nombre": "",
-            "idpais": this.model2
+            "ape_pat": "",
+            "ape_mat": ""            
         }
     }
 
